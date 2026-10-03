@@ -1,0 +1,35 @@
+{
+  "name": "apibench-mini",
+  "version": "1.0.0",
+  "description": "Zero-dependency API latency benchmarking tool, RPS calculator, ASCII histogram renderer, and visual web studio.",
+  "main": "src/core/index.js",
+  "bin": {
+    "apibench": "./bin/apibench-mini.js",
+    "apibench-mini": "./bin/apibench-mini.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "start": "node bin/apibench-mini.js ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahdyarmonfared/apibench-mini.git"
+  },
+  "keywords": [
+    "apibench",
+    "benchmark",
+    "latency",
+    "load-testing",
+    "percentiles",
+    "p95",
+    "rps",
+    "cli",
+    "developer-tools",
+    "http-bench"
+  ],
+  "author": "Mahdyar Monfared",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
