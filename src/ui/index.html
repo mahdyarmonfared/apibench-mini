@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApiBench-Mini Studio | HTTP Benchmark & RPS Calculator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-group">
+        <span class="logo-icon">🚀</span>
+        <div>
+          <h1>ApiBench-Mini Studio</h1>
+          <p class="subtitle">Zero-dependency API Latency Benchmark & RPS Profiler</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="badge">Port 3014</span>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <!-- Config Form Panel -->
+      <section class="card config-card">
+        <h2>Benchmark Configuration</h2>
+        <form id="benchForm">
+          <div class="form-row inline">
+            <div class="form-group flex-2">
+              <label for="targetUrl">Target URL</label>
+              <input type="url" id="targetUrl" placeholder="https://api.example.com/v1/health" required value="https://httpbin.org/get">
+            </div>
+            <div class="form-group flex-1">
+              <label for="method">HTTP Method</label>
+              <select id="method">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+                <option value="PATCH">PATCH</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="requests">Total Requests</label>
+              <input type="number" id="requests" min="1" max="10000" value="100">
+            </div>
+            <div class="form-group">
+              <label for="concurrency">Concurrency (Workers)</label>
+              <input type="number" id="concurrency" min="1" max="500" value="10">
+            </div>
+            <div class="form-group">
+              <label for="timeout">Timeout (ms)</label>
+              <input type="number" id="timeout" min="100" max="60000" value="10000">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="headers">Headers (Key: Value per line)</label>
+            <textarea id="headers" rows="2" placeholder="Authorization: Bearer token&#10;Content-Type: application/json"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="body">Payload Body (JSON or raw)</label>
+            <textarea id="body" rows="2" placeholder='{"key": "value"}'></textarea>
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn btn-primary">
+            <span class="btn-icon">⚡</span> Run Benchmark
+          </button>
+        </form>
+      </section>
+
+      <!-- Status Indicator -->
+      <div id="loader" class="loader-container hidden">
+        <div class="spinner"></div>
+        <p>Executing stress test & calculating latency percentiles...</p>
+      </div>
+
+      <!-- Results Dashboard -->
+      <div id="resultsContainer" class="results-container hidden">
+        <!-- Metric Cards Grid -->
+        <div class="metrics-grid">
+          <div class="metric-card highlight">
+            <span class="metric-label">Throughput</span>
+            <span id="metricRps" class="metric-value">0</span>
+            <span class="metric-unit">Req / Sec</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">P50 Latency (Median)</span>
+            <span id="metricP50" class="metric-value">0</span>
+            <span class="metric-unit">ms</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">P95 Latency</span>
+            <span id="metricP95" class="metric-value">0</span>
+            <span class="metric-unit">ms</span>
+          </div>
+
+          <div class="metric-card">
+            <span class="metric-label">P99 Latency</span>
+            <span id="metricP99" class="metric-value">0</span>
+            <span class="metric-unit">ms</span>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <!-- Overview Card -->
+          <div class="card">
+            <h3>Execution Summary</h3>
+            <table class="summary-table">
+              <tbody>
+                <tr>
+                  <td>Total Duration:</td>
+                  <td id="valDuration" class="val">0 ms</td>
+                </tr>
+                <tr>
+                  <td>Successful Requests:</td>
+                  <td id="valSuccess" class="val text-success">0</td>
+                </tr>
+                <tr>
+                  <td>Failed Requests:</td>
+                  <td id="valFailed" class="val text-error">0</td>
+                </tr>
+                <tr>
+                  <td>Transfer Throughput:</td>
+                  <td id="valKbps" class="val">0 KB/s</td>
+                </tr>
+                <tr>
+                  <td>Min / Max Latency:</td>
+                  <td id="valMinMax" class="val">0 / 0 ms</td>
+                </tr>
+                <tr>
+                  <td>Mean Latency (StdDev):</td>
+                  <td id="valMeanStd" class="val">0 ms</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Status Code Distribution -->
+          <div class="card">
+            <h3>Status Codes</h3>
+            <div id="statusCodesList" class="status-codes-list"></div>
+          </div>
+        </div>
+
+        <!-- Latency Distribution Histogram -->
+        <div class="card">
+          <h3>Latency Distribution Histogram</h3>
+          <div id="histogram" class="histogram-container"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
